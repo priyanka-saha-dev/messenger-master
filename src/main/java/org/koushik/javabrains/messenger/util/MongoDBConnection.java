@@ -2,9 +2,9 @@ package org.koushik.javabrains.messenger.util;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import org.koushik.javabrains.messenger.model.Users;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -19,7 +19,7 @@ public class MongoDBConnection {
 	private String collectionName;
 	private DBCollection userCollection;
 
-	public MongoDBConnection(String collName, String databaseName) {
+	public MongoDBConnection(String databaseName, String collName) {
 
 		try {
 			mongoClient = new MongoClient("localhost", 27017);
@@ -52,21 +52,17 @@ public class MongoDBConnection {
 		return userCollection;
 	}
 
-	public List<String> getAllUserNames() {
-		final List<String> userNames = new ArrayList<>();
+	public List<Users> getAllUserNames() {
+		final List<Users> userNames = new ArrayList<>();
 
 		DBCursor cursor = getUserCollection().find();
 		while (cursor.hasNext()) {
 			DBObject dbObject = cursor.next();
-			userNames.add(fromDBObject(dbObject));
+			userNames.add((Users) AppUtils.fromDBObject(dbObject, Users.class));
 		}
 
 		return userNames;
 
-	}
-
-	private String fromDBObject(DBObject dbObject) {
-		return dbObject.toString();
 	}
 
 }

@@ -96,6 +96,8 @@
 			<artifactId>jackson-datatype-joda</artifactId>
 			<version>${jackson.datatype.joda.version}</version>
 		</dependency>
+		
+		
 	</dependencies>
 	<properties>
 		<mongo.java.driver.version>2.11.3</mongo.java.driver.version>

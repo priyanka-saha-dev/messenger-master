@@ -8,10 +8,12 @@ import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.bson.types.ObjectId;
 @XmlRootElement
 public class Message {
 
-	private long _id;
+	private ObjectId _id;
     private String message;
     private Date created;
     private String author;
@@ -22,18 +24,18 @@ public class Message {
     	
     }
     
-    public Message(long id, String message, String author) {
-    	this._id = id;
+    public Message(String id, String message, String author) {
+    	this._id = new ObjectId(id);
     	this.message = message;
     	this.author = author;
     	this.created = new Date();
     }
     
-	public long getId() {
-		return _id;
+	public String getId() {
+		return _id.toString();
 	}
-	public void setId(long id) {
-		this._id = id;
+	public void setId(String id) {
+		this._id = new ObjectId(id);
 	}
 	public String getMessage() {
 		return message;

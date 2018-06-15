@@ -53,20 +53,20 @@ public class MessageResource {
 	
 	@PUT
 	@Path("/{messageId}")
-	public Message updateMessage(@PathParam("messageId") long id, Message message) {
+	public Message updateMessage(@PathParam("messageId") String id, Message message) {
 		message.setId(id);
 		return messageService.updateMessage(message);
 	}
 	
 	@DELETE
 	@Path("/{messageId}")
-	public void deleteMessage(@PathParam("messageId") long id) {
+	public void deleteMessage(@PathParam("messageId") String id) {
 		messageService.removeMessage(id);
 	}
 	
 	@GET
 	@Path("/{messageId}")
-	public Message getMessage(@PathParam("messageId") long id, @Context UriInfo uriInfo) {
+	public Message getMessage(@PathParam("messageId") String id, @Context UriInfo uriInfo) {
 		Message message = messageService.getMessage(id);
 		message.addLink(getUriForSelf(uriInfo, message), "self");
 		message.addLink(getUriForProfile(uriInfo, message), "profile");
@@ -97,7 +97,7 @@ public class MessageResource {
 	private String getUriForSelf(UriInfo uriInfo, Message message) {
 		return uriInfo.getBaseUriBuilder()
 		 .path(MessageResource.class)
-		 .path(Long.toString(message.getId()))
+		 .path(message.getId())
 		 .build()
 		 .toString();
 	}
