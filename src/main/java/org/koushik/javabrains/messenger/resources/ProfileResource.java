@@ -22,8 +22,6 @@ public class ProfileResource {
 
 	private ProfileService profileService = new ProfileService();
 	
-	
-	
 	@GET
 	public List<Profile> getProfiles() {
 		return profileService.getAllProfiles();
@@ -51,8 +49,5 @@ public class ProfileResource {
 	@Path("/{profileName}")
 	public void deleteProfile(@PathParam("profileName") String profileName) {
 		profileService.removeProfile(profileName);
-	}
-	
-	
-	
+	}	
 }

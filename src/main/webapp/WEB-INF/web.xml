@@ -9,6 +9,14 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>org.koushik.javabrains.messenger</param-value>
         </init-param>
+        <init-param>
+            <param-name>javax.ws.rs.container.ContainerRequestFilters</param-name>
+            <param-value>org.glassfish.jersey.filter.LoggingFilter</param-value>
+        </init-param>
+        <init-param>
+            <param-name>javax.ws.rs.container.ContainerResponseFilters</param-name>
+            <param-value>org.glassfish.jersey.filter.LoggingFilter</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

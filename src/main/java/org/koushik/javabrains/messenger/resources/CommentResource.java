@@ -29,13 +29,13 @@ public class CommentResource {
 	}
 	
 	@POST
-	public Comment addComment(@PathParam("messageId") long messageId, Comment comment) {
+	public Comment addComment(@PathParam("messageId") String messageId, Comment comment) {
 		return commentService.addComment(messageId, comment);
 	}
 	
 	@PUT
 	@Path("/{commentId}")
-	public Comment updateComment(@PathParam("messageId") long messageId, @PathParam("commentId") long id, Comment comment) {
+	public Comment updateComment(@PathParam("messageId") String messageId, @PathParam("commentId") long id, Comment comment) {
 		comment.setId(id);
 		return commentService.updateComment(messageId, comment);
 	}
@@ -54,7 +54,7 @@ public class CommentResource {
 	}*/
 	@GET
 	@Path("/{commentId}")
-	public Comment getComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
+	public Comment getComment(@PathParam("messageId") String messageId, @PathParam("commentId") long commentId) {
 		//System.out.println(comment.getPath());
 		//System.out.println(comment.getMatrixParameters());
 		return commentService.getComment(messageId, 1);

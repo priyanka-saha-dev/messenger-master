@@ -2,44 +2,85 @@ package org.koushik.javabrains.messenger.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.koushik.javabrains.messenger.database.DatabaseClass;
+import org.koushik.javabrains.messenger.exception.DataNotFoundException;
 import org.koushik.javabrains.messenger.model.Profile;
+import org.koushik.javabrains.messenger.util.AppUtils;
+import org.koushik.javabrains.messenger.util.MongoDBConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
 
 public class ProfileService {
 
-	private Map<String, Profile> profiles = DatabaseClass.getProfiles();
+	MongoDBConnection mongo;
+	private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
 	
 	public ProfileService() {
-		profiles.put("koushik", new Profile(1L, "koushik", "Koushik", "Kothagal"));
+		this.mongo = new MongoDBConnection("messages", "profiles");
 	}
 	
 	public List<Profile> getAllProfiles() {
-		return new ArrayList<Profile>(profiles.values()); 
+		
+		List<Profile> profiles = new ArrayList<>();
+		
+		DBCursor cursor = mongo.getDBCollection().find();
+
+		while (cursor.hasNext()) {
+			DBObject dbObject = cursor.next();
+			profiles.add((Profile) AppUtils.fromDBObject(dbObject, Profile.class));
+		}		
+		return profiles; 
 	}
 	
 	public Profile getProfile(String profileName) {
-		return profiles.get(profileName);
+		
+		Profile profile = null;
+		List<Profile> allProfiles = getAllProfiles();
+		
+		for (Profile profileMember : allProfiles) {
+			if(profileName.equals(profileMember.getProfileName())){
+				profile = profileMember;
+				break;
+			}
+		}
+		
+		if (profile == null) {
+			throw new DataNotFoundException("Profile with name " + profileName
+					+ " not found");
+		}
+		
+		return profile;
 	}
 	
 	public Profile addProfile(Profile profile) {
-		profile.setId(profiles.size() + 1);
-		profiles.put(profile.getProfileName(), profile);
+		
+		WriteResult result = mongo.getDBCollection().insert(AppUtils.toDBObject(profile));
+		logger.debug("New doc added for id : " + result.getField("_id"));
 		return profile;
 	}
 	
 	public Profile updateProfile(Profile profile) {
-		if (profile.getProfileName().isEmpty()) {
+		if (profile.getId() == null) {
 			return null;
 		}
-		profiles.put(profile.getProfileName(), profile);
+
+		DBObject query = new BasicDBObject("_id", profile.getId());
+		WriteResult result = mongo.getDBCollection().update(query,
+				AppUtils.toDBObject(profile));
+
+		logger.debug("number of rows updated : " + result.getN());
 		return profile;
 	}
 	
-	public Profile removeProfile(String profileName) {
-		return profiles.remove(profileName);
+	public void removeProfile(String profileName) {
+		DBObject query = new BasicDBObject("profileName", profileName);
+		WriteResult result = mongo.getDBCollection().remove(query);
+
+		logger.debug("number of rows deleted : " + result.getN());
 	}
-	
-	
 }

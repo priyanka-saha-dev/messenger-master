@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.koushik.javabrains.messenger.model.Users;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -12,12 +14,14 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
+
 public class MongoDBConnection {
 
 	private MongoClient mongoClient;
 	private String dbName;
 	private String collectionName;
-	private DBCollection userCollection;
+	private DBCollection dbCollection;
+	private static final Logger logger = LoggerFactory.getLogger(MongoDBConnection.class);
 
 	public MongoDBConnection(String databaseName, String collName) {
 
@@ -30,14 +34,14 @@ public class MongoDBConnection {
 			init();
 
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 	}
 
 	public void init() {
-		DB userDatabase = mongoClient.getDB(getDbName());
-		userCollection = userDatabase.getCollection(getCollectionName());
+		DB db = mongoClient.getDB(getDbName());
+		dbCollection = db.getCollection(getCollectionName());
 	}
 
 	public String getDbName() {
@@ -48,14 +52,14 @@ public class MongoDBConnection {
 		return collectionName;
 	}
 
-	public DBCollection getUserCollection() {
-		return userCollection;
+	public DBCollection getDBCollection() {
+		return dbCollection;
 	}
 
 	public List<Users> getAllUserNames() {
 		final List<Users> userNames = new ArrayList<>();
 
-		DBCursor cursor = getUserCollection().find();
+		DBCursor cursor = getDBCollection().find();
 		while (cursor.hasNext()) {
 			DBObject dbObject = cursor.next();
 			userNames.add((Users) AppUtils.fromDBObject(dbObject, Users.class));
