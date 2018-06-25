@@ -21,6 +21,9 @@ public class ProfileService {
 	private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
 	
 	public ProfileService() {
+		
+		
+		
 		this.mongo = new MongoDBConnection("messages", "profiles");
 	}
 	
