@@ -81,7 +81,7 @@ public class MessageService {
 
 		WriteResult result = mongo.getDBCollection().insert(
 				AppUtils.toDBObject(message));
-		logger.debug("New doc added for id : " + result.getField("_id"));
+		logTraces(result, "added");
 		return message;
 	}
 
@@ -94,7 +94,7 @@ public class MessageService {
 		WriteResult result = mongo.getDBCollection().update(query,
 				AppUtils.toDBObject(message));
 
-		logger.debug("number of rows updated : " + result.getN());
+		logTraces(result, "updated");
 		return message;
 	}
 
@@ -103,7 +103,11 @@ public class MessageService {
 		DBObject query = new BasicDBObject("_id", id);
 		WriteResult result = mongo.getDBCollection().remove(query);
 
-		logger.debug("number of rows deleted : " + result.getN());
+		logTraces(result, "deleted");
+	}
+	
+	private void logTraces(WriteResult result, String activity) {
+		logger.debug("number of rows " + activity + " : " + result.getN());
 	}
 
 }
