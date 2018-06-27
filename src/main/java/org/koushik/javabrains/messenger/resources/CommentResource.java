@@ -21,42 +21,48 @@ import org.koushik.javabrains.messenger.service.CommentService;
 
 public class CommentResource {
 
-	private CommentService commentService = new CommentService();
+	private CommentService commentService; 
 	
+	public CommentResource(String messageID) {
+		super();
+		this.commentService = new CommentService(messageID);
+	}
+
 	@GET
-	public List<Comment> getAllComments(@PathParam("messageId") long messageId) {
-		return commentService.getAllComments(messageId);
+	public List<Comment> getAllComments() {
+		return commentService.getAllComments();
 	}
 	
 	@POST
-	public Comment addComment(@PathParam("messageId") String messageId, Comment comment) {
-		return commentService.addComment(messageId, comment);
+	public Comment addComment(Comment comment) {
+		return commentService.addComment(comment);
 	}
 	
 	@PUT
 	@Path("/{commentId}")
-	public Comment updateComment(@PathParam("messageId") String messageId, @PathParam("commentId") long id, Comment comment) {
+	public Comment updateComment(@PathParam("commentId") String id, Comment comment) {
 		comment.setId(id);
-		return commentService.updateComment(messageId, comment);
+		return commentService.updateComment(comment);
 	}
 	
 	@DELETE
 	@Path("/{commentId}")
-	public void deleteComment(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
-		commentService.removeComment(messageId, commentId);
+	public void deleteComment(@PathParam("commentId") String commentId) {
+		commentService.removeComment(commentId);
 	}
 	
 	
-	/*@GET
-	@Path("/{commentId}")
-	public Comment getMessage(@PathParam("messageId") long messageId, @PathParam("commentId") long commentId) {
-		return commentService.getComment(messageId, commentId);
-	}*/
 	@GET
+	@Path("/{commentId}")
+	public Comment getMessage(@PathParam("commentId") long commentId) {
+		//return commentService.getComment(messageId, commentId);
+		return null;
+	}
+	/*@GET
 	@Path("/{commentId}")
 	public Comment getComment(@PathParam("messageId") String messageId, @PathParam("commentId") long commentId) {
 		//System.out.println(comment.getPath());
 		//System.out.println(comment.getMatrixParameters());
 		return commentService.getComment(messageId, 1);
-	}
+	}*/
 }

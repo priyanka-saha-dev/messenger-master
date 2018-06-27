@@ -14,8 +14,6 @@ import org.koushik.javabrains.messenger.model.ErrorMessage;
 import org.koushik.javabrains.messenger.model.Message;
 import org.koushik.javabrains.messenger.util.AppUtils;
 import org.koushik.javabrains.messenger.util.MongoDBConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
@@ -26,7 +24,6 @@ public class CommentService {
 	MongoDBConnection mongo;
 	
 	Message message;
-	private static final Logger logger = LoggerFactory.getLogger(CommentService.class);
 	
 	public CommentService(String messageId) {
 		this.mongo = new MongoDBConnection("messages", "comments");
@@ -62,7 +59,8 @@ public class CommentService {
 		
 		WriteResult result = mongo.getDBCollection().insert(
 				AppUtils.toDBObject(comment));
-		logger.debug("New doc added for id : " + result.getField("_id"));
+		
+		AppUtils.logTraces(result, "added", "CommentService");
 		
 		return comment;
 	}
@@ -76,7 +74,7 @@ public class CommentService {
 		DBObject query = new BasicDBObject("_id", comment.getId());
 		WriteResult result = mongo.getDBCollection().update(query, AppUtils.toDBObject(comment));
 
-		logger.debug("number of rows updated : " + result.getN());
+		AppUtils.logTraces(result, "updated", "CommentService");
 		
 		return comment;
 	}
@@ -86,7 +84,7 @@ public class CommentService {
 		DBObject query = new BasicDBObject("_id", commentId);
 		WriteResult result = mongo.getDBCollection().remove(query);
 
-		logger.debug("number of rows deleted : " + result.getN());
+		AppUtils.logTraces(result, "deleted", "CommentService");
 	}
 		
 }

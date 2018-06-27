@@ -103,8 +103,8 @@ public class MessageResource {
 	}
 	
 	@Path("/{messageId}/comments")
-	public CommentResource getCommentResource() {
-		return new CommentResource();
+	public CommentResource getCommentResource(@PathParam("messageId") String id) {
+		return new CommentResource(id);
 	}
 	
 }

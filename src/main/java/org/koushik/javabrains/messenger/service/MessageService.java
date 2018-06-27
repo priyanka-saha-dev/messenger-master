@@ -8,8 +8,6 @@ import org.koushik.javabrains.messenger.exception.DataNotFoundException;
 import org.koushik.javabrains.messenger.model.Message;
 import org.koushik.javabrains.messenger.util.AppUtils;
 import org.koushik.javabrains.messenger.util.MongoDBConnection;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
@@ -19,7 +17,6 @@ import com.mongodb.WriteResult;
 public class MessageService {
 
 	MongoDBConnection mongo;
-	private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
 
 	public MessageService() {
 		this.mongo = new MongoDBConnection("messages", "messenger");
@@ -81,7 +78,7 @@ public class MessageService {
 
 		WriteResult result = mongo.getDBCollection().insert(
 				AppUtils.toDBObject(message));
-		logTraces(result, "added");
+		AppUtils.logTraces(result, "added", "MessengerService");
 		return message;
 	}
 
@@ -93,8 +90,8 @@ public class MessageService {
 		DBObject query = new BasicDBObject("_id", message.getId());
 		WriteResult result = mongo.getDBCollection().update(query,
 				AppUtils.toDBObject(message));
-
-		logTraces(result, "updated");
+		
+		AppUtils.logTraces(result, "updated", "MessengerService");
 		return message;
 	}
 
@@ -103,11 +100,20 @@ public class MessageService {
 		DBObject query = new BasicDBObject("_id", id);
 		WriteResult result = mongo.getDBCollection().remove(query);
 
-		logTraces(result, "deleted");
-	}
-	
-	private void logTraces(WriteResult result, String activity) {
-		logger.debug("number of rows " + activity + " : " + result.getN());
+		AppUtils.logTraces(result, "deleted", "MessengerService");
 	}
 
+	public Message getMessageWithComments(String messageId) {
+		List<Message> msgs = new ArrayList<>();
+
+		DBCursor cursor = mongo.getDBCollection().find();
+
+		while (cursor.hasNext()) {
+			DBObject dbObject = cursor.next();
+			msgs.add((Message) AppUtils.fromDBObject(dbObject, Message.class));
+		}
+
+		return null;
+	}
+	
 }
