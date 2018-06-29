@@ -29,7 +29,8 @@ public class CommentService {
 		this.mongo = new MongoDBConnection("messages", "comments");
 		
 		MessageService messageService = new MessageService();
-		message = messageService.getMessage(messageId);
+		//message = messageService.getMessage(messageId);
+		message = messageService.getMessageWithComments(messageId);
 	}
 	
 	public List<Comment> getAllComments() {		
